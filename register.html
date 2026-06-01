@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Đăng ký tài khoản</title>
+    <style>
+        body { font-family: 'Poppins', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background: #f3f4f6; margin: 0; }
+        .box { background: white; padding: 40px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 300px; text-align: center; }
+        input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; background: #10b981; color: white; border: none; border-radius: 8px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div class="box">
+    <h2>Đăng ký tài khoản</h2>
+    <input type="text" id="reg-name" placeholder="Họ và tên">
+    <input type="text" id="reg-address" placeholder="Địa chỉ giao hàng">
+    <input type="password" id="reg-pass" placeholder="Mật khẩu">
+    <button onclick="handleRegister()">Đăng ký ngay</button>
+    <p><a href="login.html">Đã có tài khoản? Đăng nhập</a></p>
+</div>
+<script>
+    function handleRegister() {
+        const name = document.getElementById('reg-name').value;
+        const address = document.getElementById('reg-address').value;
+        const pass = document.getElementById('reg-pass').value;
+        if (!name || !pass) { alert("Vui lòng nhập đủ thông tin!"); return; }
+        
+        localStorage.setItem('user_account', JSON.stringify({ name, address, pass }));
+        alert("Đăng ký thành công!");
+        window.location.href = 'login.html';
+    }
+</script>
+</body>
+</html>

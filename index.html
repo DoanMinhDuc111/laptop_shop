@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ thống Laptop</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="auth-area" style="text-align: right; margin: 20px;">
+        <a href="register.html" style="margin-right:10px; color:#6366f1; text-decoration:none;">Đăng ký</a>
+        <button id="login-btn" onclick="window.location.href='login.html'" style="padding:10px; cursor:pointer;">Đăng nhập</button>
+        
+        <div id="user-info" style="display:none; vertical-align: middle;">
+            <span id="user-display" style="margin-right:15px; font-weight:bold; color: #6366f1;"></span>
+            <button onclick="logout()" style="padding:5px 10px; cursor:pointer; background:#ef4444; color:white; border:none; border-radius:5px;">Đăng xuất</button>
+        </div>
+        
+        <button onclick="openCart()" style="padding:10px 20px; cursor:pointer; background:#6366f1; color:white; border:none; border-radius:8px;">
+            🛒 Giỏ hàng (<span id="cart-count">0</span>)
+        </button>
+    </div>
+
+    <h1>Danh sách Laptop</h1>
+
+    <div class="controls" style="margin: 20px 0; display: flex; gap: 10px;">
+        <input type="text" id="search-input" placeholder="Tìm tên laptop..." oninput="filterProducts()" style="padding:10px; width:200px;">
+        <select id="category-filter" onchange="filterProducts()" style="padding:10px;">
+            <option value="all">Tất cả thương hiệu</option>
+            <option value="Dell">Dell</option>
+            <option value="Asus">Asus</option>
+            <option value="HP">HP</option>
+            <option value="Macbook">Macbook</option>
+        </select>
+    </div>
+
+    <div id="product-grid"></div>
+
+    <div id="product-modal" class="modal">
+        <div class="modal-content">
+            <span onclick="closeModal()" style="float:right; cursor:pointer; font-size: 24px;">&times;</span>
+            <div id="modal-body"></div>
+            <button onclick="askAIAboutProduct()" style="background:#6366f1; color:white; padding:10px; border-radius:8px; border:none; width:100%; cursor:pointer;">
+                Hỏi AI tư vấn
+            </button>
+        </div>
+    </div>
+
+    <div id="cart-modal" class="modal">
+        <div class="modal-content">
+            <span onclick="closeCart()" style="float:right; cursor:pointer; font-size: 24px;">&times;</span>
+            <h2>Giỏ hàng của bạn</h2>
+            <div id="cart-items" style="margin: 20px 0;"></div>
+            
+            <div id="checkout-form" style="display:none; border-top:1px solid #eee; padding-top:15px;">
+                <input type="text" id="customer-name" placeholder="Họ và tên" style="width:100%; margin-bottom:10px; padding:8px;">
+                <input type="text" id="customer-address" placeholder="Địa chỉ giao hàng" style="width:100%; margin-bottom:10px; padding:8px;">
+            </div>
+            
+            <button id="checkout-btn" onclick="checkout()" style="width:100%; padding:10px; background:#10b981; color:white; border:none; border-radius:8px; cursor:pointer;">Thanh toán</button>
+            <button onclick="openHistory()" style="width:100%; padding:10px; background:#6366f1; color:white; border:none; border-radius:8px; margin-top:10px; cursor:pointer;">
+                Xem lịch sử đơn hàng
+            </button>
+        </div>
+    </div>
+
+    <div class="ai-icon" onclick="openAIChat()">🤖</div>
+    <div id="chat-box" style="display:block; position:fixed; bottom:100px; right:40px; width:300px; height:400px; background:white; border-radius:15px; box-shadow:0 10px 25px rgba(0,0,0,0.2); padding:20px; z-index:1000;">
+        <h3 style="margin-top:0;">Trợ lý AI</h3>
+        <div id="chat-messages" style="height:280px; overflow-y:auto; border-bottom:1px solid #ddd; margin-bottom:10px; font-size: 14px;"></div>
+        <input type="text" id="chat-input" placeholder="Hỏi gì về laptop..." style="width:70%; padding:5px;">
+        <button onclick="sendMessage()">Gửi</button>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

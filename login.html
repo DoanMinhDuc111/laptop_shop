@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Đăng nhập - Hệ thống Laptop</title>
+    <style>
+        body { font-family: 'Poppins', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background: #f3f4f6; margin: 0; }
+        .login-box { background: white; padding: 40px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 300px; text-align: center; }
+        input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; background: #6366f1; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; }
+        button:hover { background: #4f46e5; }
+    </style>
+</head>
+<body>
+    <div class="login-box">
+    <h2>Đăng nhập</h2>
+    <input type="text" id="username" placeholder="Nhập tên đăng nhập">
+    <input type="password" id="password" placeholder="Nhập mật khẩu">
+    <button onclick="handleLogin()">Đăng nhập</button>
+    <p><a href="register.html">Chưa có tài khoản? Đăng ký</a></p>
+</div>
+
+<script>
+    function handleLogin() {
+        const name = document.getElementById('username').value;
+        const pass = document.getElementById('password').value;
+        const savedUser = JSON.parse(localStorage.getItem('user_account'));
+
+        if (savedUser && savedUser.name === name && savedUser.pass === pass) {
+            localStorage.setItem('user_token', 'logged_in');
+            localStorage.setItem('user_profile', JSON.stringify(savedUser));
+            window.location.href = 'index.html';
+        } else {
+            alert("Sai tên đăng nhập hoặc mật khẩu!");
+        }
+    }
+</script>
+</body>
+</html>

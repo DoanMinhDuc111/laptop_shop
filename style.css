@@ -1,0 +1,116 @@
+:root {
+    --bg-color: #f8f9fa; /* Trắng sáng */
+    --card-bg: #ffffff; /* Card trắng tinh */
+    --text-primary: #111827; /* Đen đậm */
+    --text-secondary: #6b7280; /* Xám */
+    --accent: #6366f1; /* Màu tím chủ đạo vẫn nổi bật */
+    --shadow: 0 10px 30px rgba(0,0,0,0.05);
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+    margin: 0;
+    padding: 20px;
+}
+
+/* Card với độ sâu nhẹ (Neumorphic subtle shadow) */
+.card {
+    background: var(--card-bg);
+    padding: 24px;
+    border-radius: 20px;
+    box-shadow: var(--shadow);
+    border: 1px solid #e5e7eb;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+}
+
+/* Buttons */
+button {
+    background: var(--accent);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+/* Inputs */
+input, select {
+    background: #ffffff;
+    border: 1px solid #d1d5db;
+    padding: 12px;
+    border-radius: 12px;
+    color: var(--text-primary);
+}
+
+/* Chat Box hiện đại, sáng sủa */
+#chat-box {
+    background: #ffffff !important;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    border-radius: 24px !important;
+}
+
+/* Typography sạch sẽ */
+h1, h2 { color: #000; letter-spacing: -0.5px; }
+
+/* Grid Layout */
+#product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+/* Modal */
+.modal {
+    display: none; 
+    position: fixed; 
+    z-index: 9999; /* Đảm bảo modal nằm trên tất cả mọi thứ */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5); /* Lớp nền mờ */
+    backdrop-filter: blur(5px);
+}
+
+.modal-content {
+    background: #ffffff;
+    margin: 10% auto;
+    padding: 30px;
+    width: 80%;
+    max-width: 500px;
+    border-radius: 20px;
+    position: relative;
+    color: #000;
+}
+/* Điều chỉnh cho điện thoại (màn hình nhỏ hơn 768px) */
+@media (max-width: 768px) {
+    body { padding: 10px; }
+    
+    #product-grid {
+        grid-template-columns: 1fr; /* Chỉ hiển thị 1 cột */
+    }
+    
+    .modal-content {
+        width: 90% !important; /* Modal rộng 90% màn hình */
+        margin: 20% auto;
+    }
+    
+    .controls {
+        flex-direction: column; /* Đưa search và filter xuống hàng dọc */
+    }
+    
+    #chat-box {
+        width: 90% !important;
+        right: 5% !important;
+        bottom: 80px;
+    }
+}
