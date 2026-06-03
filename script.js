@@ -2,7 +2,6 @@
 let allProducts = [];
 let cart = JSON.parse(localStorage.getItem('web_cart')) || [];
 let orderHistory = JSON.parse(localStorage.getItem('web_history')) || [];
-let currentUser = JSON.parse(localStorage.getItem('current_user')) || null;
 
 // ==========================================
 // 1. LẤY DỮ LIỆU TỪ GOOGLE SHEET ĐỔ VÀO WEB
@@ -80,7 +79,7 @@ window.filterProducts = function() {
 };
 
 // ==========================================
-// 3. ĐIỀU HƯỚNG CHI TIẾT VÀ GIỎ HÀNG
+// 3. ĐIỀU HƯỚNG VÀ XỬ LÝ GIỎ HÀNG ĐỘC LẬP
 // ==========================================
 window.openDetail = function(id) {
     window.location.href = `product-detail.html?id=${id}`;
@@ -101,60 +100,77 @@ function updateCartCount() {
     if(cartCount) cartCount.innerText = cart.length;
 }
 
+// --- SỬA LỖI: THÊM HÀM OPEN CART ---
 window.openCart = function() {
-    const cartModal = document.getElementById('cart-modal');
-    const cartItemsDiv = document.getElementById('cart-items');
-    if (!cartModal || !cartItemsDiv) return;
+    window.location.href = 'cart.html'; // Chuyển hướng tới trang giỏ hàng
+};
+
+// Đảm bảo có cả hàm updateCartCount để không bị lỗi nếu nút nào gọi nó
+window.updateCartCount = function() {
+    const cartCount = document.getElementById('cart-count');
+    if (cartCount) cartCount.innerText = cart.length;
+};
+
+// Hàm vẽ dữ liệu giỏ hàng lên trang cart.html độc lập
+window.renderCartPage = function() {
+    const cartItemsDiv = document.getElementById('cart-page-items');
+    const checkoutSection = document.getElementById('checkout-form-section');
+    const totalDiv = document.getElementById('cart-total');
+    
+    if (!cartItemsDiv) return; // Nếu không ở trang cart.html thì dừng lại
 
     if (cart.length === 0) {
-        cartItemsDiv.innerHTML = "<p>Giỏ hàng đang trống.</p>";
-        document.getElementById('checkout-form').style.display = 'none';
+        cartItemsDiv.innerHTML = `<p style="text-align:center; color:#666; padding: 20px 0;">Giỏ hàng của bạn đang trống trơn. <a href="index.html" style="color:#6366f1; text-decoration:none; font-weight:bold;">Quay lại sắm ngay!</a></p>`;
+        if (checkoutSection) checkoutSection.style.display = 'none';
+        if (totalDiv) totalDiv.innerHTML = '';
     } else {
         cartItemsDiv.innerHTML = cart.map((item, index) => `
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; border-bottom:1px solid #eee; padding-bottom:5px;">
-                <span style="font-size:14px; text-align:left; flex:2;">${item.name}</span>
-                <span style="color:red; font-weight:bold; flex:1; text-align:right;">${item.price.toLocaleString()}đ</span>
-                <button onclick="removeFromCart(${index})" style="background:none; border:none; color:gray; cursor:pointer; margin-left:10px;">❌</button>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; border-bottom:1px solid #f3f4f6; padding-bottom:15px;">
+                <img src="${item.image}" alt="${item.name}" style="width:60px; height:60px; object-fit:cover; border-radius:8px; margin-right:15px;">
+                <span style="font-size:14px; text-align:left; flex:2; font-weight:600; color:#1f2937;">${item.name}</span>
+                <span style="color:#e53e3e; font-weight:bold; flex:1; text-align:right; font-size:15px;">${item.price.toLocaleString()}đ</span>
+                <button onclick="window.removeFromCartPage(${index})" style="background:none; border:none; color:#9ca3af; cursor:pointer; margin-left:15px; font-size:16px;">❌</button>
             </div>
         `).join('');
-        document.getElementById('checkout-form').style.display = 'block';
+        
+        if (checkoutSection) checkoutSection.style.display = 'block';
+        
+        const total = cart.reduce((sum, item) => sum + item.price, 0);
+        if (totalDiv) totalDiv.innerHTML = `Tổng tiền: <span style="color:#e53e3e; font-size:18px; font-weight:bold;">${total.toLocaleString()}đ</span>`;
     }
-    cartModal.style.display = 'block';
 };
 
-window.closeCart = function() {
-    const cartModal = document.getElementById('cart-modal');
-    if(cartModal) cartModal.style.display = 'none';
-};
-
-window.removeFromCart = function(index) {
+window.removeFromCartPage = function(index) {
     cart.splice(index, 1);
     localStorage.setItem('web_cart', JSON.stringify(cart));
     updateCartCount();
-    openCart();
-};
-
-window.openAIChat = function() {
-    const chatBox = document.getElementById('chat-box');
-    if(chatBox) {
-        chatBox.style.display = chatBox.style.display === 'flex' ? 'none' : 'flex';
-    }
+    window.renderCartPage(); // Vẽ lại giao diện ngay khi xóa
 };
 
 window.checkout = function() {
-    const name = document.getElementById('customer-name').value.trim();
-    const address = document.getElementById('customer-address').value.trim();
+    const nameInput = document.getElementById('customer-name');
+    const addressInput = document.getElementById('customer-address');
+    
+    if(!nameInput || !addressInput) return;
+
+    const name = nameInput.value.trim();
+    const address = addressInput.value.trim();
+    
     if(!name || !address) {
         alert("Vui lòng điền thông tin giao hàng!");
         return;
     }
-    alert(`🎉 Đặt hàng thành công!\nCảm ơn anh/chị ${name} đã mua sắm.`);
+    
+    alert(`🎉 Đặt hàng thành công!\nCảm ơn anh/chị ${name} đã mua sắm tại TTGShop.`);
     orderHistory.push({ date: new Date().toLocaleString(), items: [...cart], name, address });
     localStorage.setItem('web_history', JSON.stringify(orderHistory));
+    
     cart = [];
     localStorage.removeItem('web_cart');
     updateCartCount();
-    closeCart();
+    
+    // Đặt hàng xong chuyển hướng thẳng về trang chủ
+    window.location.href = 'index.html';
 };
 
 window.openHistory = function() {
@@ -170,46 +186,50 @@ window.openHistory = function() {
 };
 
 // ==========================================
-// 4. HỆ THỐNG GỢI Ý VÀ KẾT NỐI API CHATBOT MODERN
+// 4. HỆ THỐNG CHATBOT (SỬA LỖI)
 // ==========================================
+window.openAIChat = function() {
+    const chatBox = document.getElementById('chat-box');
+    if (chatBox) {
+        chatBox.style.display = chatBox.style.display === 'flex' ? 'none' : 'flex';
+    }
+};
+
 function initChat() {
     const chatDiv = document.getElementById('chat-messages');
     if (!chatDiv) return;
-    
+
     chatDiv.innerHTML = `
         <div style="background:#ffffff; padding:14px 18px; border-radius:20px 20px 20px 4px; box-shadow:0 2px 12px rgba(0,0,0,0.03); max-width:85%; color:#1e293b; line-height:1.6; align-self:flex-start; border: 1px solid #f1f5f9;">
-            Dạ em chào anh/chị! 👋 Em là Bot Phạm Nhật Vượng, trợ lý ảo tư vấn của TTGShop. Em có thể hỗ trợ anh/chị xem máy, tư vấn trả góp hay tìm thông tin khuyến mãi gì hôm nay ạ? 🥰
-            <span style="color:#6366f1; cursor:pointer; margin-left:4px; font-size:15px;">🔊</span>
+            Dạ em chào anh/chị! 👋 Em là Bot Phạm Nhật Vượng. Em có thể hỗ trợ anh/chị hôm nay không ạ? 🥰
         </div>
     `;
+
+    const isDetailPage = window.location.pathname.includes('product-detail.html');
     
-    const suggestions = [
-        { text: "Máy nào đang bán chạy?", icon: "🔥" },
-        { text: "Có khuyến mãi gì không?", icon: "🎁" },
-        { text: "Tư vấn laptop văn phòng", icon: "💻" }
-    ];
-    
-    const btnContainer = document.createElement('div');
-    btnContainer.style.cssText = "display:flex; flex-direction:column; gap:8px; margin-top:10px; align-items:flex-start; width:100%;";
-    
-    suggestions.forEach(item => {
+    if (isDetailPage) {
+        const btnContainer = document.createElement('div');
+        btnContainer.style.cssText = "display:flex; flex-direction:column; gap:8px; margin-top:10px; align-items:flex-start; width:100%;";
+        
         const btn = document.createElement('button');
-        btn.innerHTML = `<span style="margin-right:6px;">${item.icon}</span> ${item.text}`;
-        btn.style.cssText = "padding:10px 20px; background:#e0e7ff; border:1px solid #c7d2fe; color:#4338ca; border-radius:24px; cursor:pointer; font-size:14px; font-weight:600; transition:all 0.2s; box-shadow:0 2px 6px rgba(99,102,241,0.06); text-align:left; width:fit-content; display:inline-flex; align-items:center;";
+        btn.innerHTML = `<span style="margin-right:6px;">🤖</span> Hỏi AI về sản phẩm này`;
+        btn.style.cssText = "padding:10px 20px; background:#e0e7ff; border:1px solid #c7d2fe; color:#4338ca; border-radius:24px; cursor:pointer; font-size:14px; font-weight:600; transition:all 0.2s;";
         
-        btn.onmouseover = () => { btn.style.background = "#c7d2fe"; };
-        btn.onmouseout = () => { btn.style.background = "#e0e7ff"; };
-        
-        btn.onclick = () => {
+        btn.onclick = function() {
             const input = document.getElementById('chat-input');
-            if(input) input.value = item.text;
-            window.sendMessage();
+            if (input) {
+                input.value = "Hỏi AI về sản phẩm này";
+                // Gửi ngay lập tức
+                window.sendMessage();
+            }
         };
+        
         btnContainer.appendChild(btn);
-    });
-    chatDiv.appendChild(btnContainer);
+        chatDiv.appendChild(btnContainer);
+    }
 }
 
+// Hàm gửi tin nhắn chính thức
 window.sendMessage = async function() {
     const input = document.getElementById('chat-input');
     const chatDiv = document.getElementById('chat-messages');
@@ -218,6 +238,7 @@ window.sendMessage = async function() {
 
     const userText = input.value.trim();
     
+    // Hiển thị tin nhắn người dùng
     chatDiv.innerHTML += `
         <div style="background:#6366f1; color:white; padding:12px 18px; border-radius:20px 20px 4px 20px; max-width:85%; line-height:1.5; font-size:14px; align-self:flex-end; box-shadow:0 4px 12px rgba(99,102,241,0.2); font-weight:500; margin-left:auto;">
             ${userText}
@@ -234,65 +255,86 @@ window.sendMessage = async function() {
     `;
     chatDiv.scrollTop = chatDiv.scrollHeight;
 
+    const currentProductUrl = window.location.href;
+    const productNameElement = document.querySelector('.product-title') || document.querySelector('h2') || document.querySelector('h1');
+    const currentProductName = productNameElement ? productNameElement.innerText.trim() : "Sản phẩm";
+
     try {
         const response = await fetch('/api/chat', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ message: userText })
+            body: JSON.stringify({ 
+                query: userText,
+                inputs: {
+                    product_name: currentProductName,
+                    current_product_url: currentProductUrl
+                }
+            })
         });
+
         const data = await response.json();
         
-        const loadingEl = document.getElementById(loadingId);
-        if (loadingEl) loadingEl.remove();
+        document.getElementById(loadingId).remove();
         
         chatDiv.innerHTML += `
-            <div style="background:#ffffff; padding:14px 18px; border-radius:20px 20px 20px 4px; box-shadow:0 2px 12px rgba(0,0,0,0.03); max-width:85%; color:#1e293b; line-height:1.6; align-self:flex-start; border:1px solid #f1f5f9;">
-                <b>Bot PMV:</b> ${data.answer}
+            <div style="background:#ffffff; padding:14px 18px; border-radius:20px 20px 20px 4px; box-shadow:0 2px 12px rgba(0,0,0,0.03); max-width:85%; color:#1e293b; line-height:1.6; align-self:flex-start; border: 1px solid #f1f5f9;">
+                <b>Bot PMV:</b> ${data.answer || data.text || "Em đã nhận được câu hỏi ạ..."}
             </div>
         `;
-        chatDiv.scrollTop = chatDiv.scrollHeight; 
     } catch (error) {
-        const loadingEl = document.getElementById(loadingId);
-        if (loadingEl) loadingEl.remove();
-        
-        let aiReply = `Hệ thống AI đang phân tích yêu cầu "${userText}". Bạn vui lòng kiểm tra lại kết nối nhé!`;
-        if (userText.includes("văn phòng")) {
-            aiReply = "Dựa trên danh sách từ Google Sheet, các dòng máy làm văn phòng đang cực mượt mà, bấm 'Chi tiết' ngoài màn hình để xem sâu thông số RAM và SSD nhé!";
-        } else if (userText.includes("bán chạy") || userText.includes("khuyến mãi")) {
-            aiReply = "Các dòng laptop ngay tại trang chủ đang có ưu đãi giảm giá sâu và tặng kèm bộ quà chuột không dây đó ạ!";
-        }
+        console.error("Lỗi:", error);
+        document.getElementById(loadingId).remove();
         
         chatDiv.innerHTML += `
-            <div style="background:#ffffff; padding:14px 18px; border-radius:20px 20px 20px 4px; box-shadow:0 2px 12px rgba(0,0,0,0.03); max-width:85%; color:#1e293b; line-height:1.6; align-self:flex-start; border:1px solid #f1f5f9;">
-                ${aiReply}
+            <div style="background:#ffffff; padding:14px 18px; border-radius:20px 20px 4px 20px; box-shadow:0 2px 12px rgba(0,0,0,0.03); max-width:85%; color:#1e293b; line-height:1.6; align-self:flex-start; border:1px solid #f1f5f9;">
+                <b>Bot PMV:</b> Xin lỗi, hiện tại hệ thống đang gặp sự cố. Anh/chị thử lại sau nhé!
             </div>
         `;
-        chatDiv.scrollTop = chatDiv.scrollHeight;
     }
+    chatDiv.scrollTop = chatDiv.scrollHeight;
 };
-
-window.checkAuth = function() {
+// ==========================================
+// 5. QUẢN LÝ ĐĂNG NHẬP / ĐĂNG XUẤT ĐỒNG BỘ
+// ==========================================
+window.checkLoginStatus = function() {
+    const currentUser = localStorage.getItem('currentUser'); 
+    const registerBtn = document.querySelector('.btn-register');
     const loginBtn = document.getElementById('login-btn');
-    const btnRegister = document.querySelector('.btn-register');
     const userInfo = document.getElementById('user-info');
     const userDisplay = document.getElementById('user-display');
-    
-    if(currentUser && userInfo && loginBtn && btnRegister && userDisplay) {
-        loginBtn.style.display = 'none';
-        btnRegister.style.display = 'none';
-        userDisplay.innerText = "Xin chào, " + currentUser.name;
-        userInfo.style.display = 'block';
+
+    if (currentUser) {
+        if (registerBtn) registerBtn.style.display = 'none';
+        if (loginBtn) loginBtn.style.display = 'none';
+        if (userInfo) userInfo.style.display = 'flex'; 
+        if (userDisplay) userDisplay.textContent = `Xin chào, ${currentUser}`;
+    } else {
+        if (registerBtn) registerBtn.style.display = 'inline-block';
+        if (loginBtn) loginBtn.style.display = 'inline-block';
+        if (userInfo) userInfo.style.display = 'none';
     }
 };
 
 window.logout = function() {
-    localStorage.removeItem('current_user');
-    window.location.reload();
+    localStorage.removeItem('currentUser'); 
+    localStorage.removeItem('user_token');
+    localStorage.removeItem('current_user'); 
+    
+    alert("Đăng xuất thành công!");
+    window.location.href = 'index.html'; 
 };
 
+// ==========================================
+// 6. KHỞI CHẠY KHI TRANG TẢI XONG
+// ==========================================
 document.addEventListener('DOMContentLoaded', () => {
     fetchProductsFromSheet(); 
-    checkAuth();
+    window.checkLoginStatus(); 
     initChat();
     updateCartCount();
+    
+    // Nhận diện nếu đang ở trang cart.html thì tự kích hoạt vẽ dữ liệu giỏ hàng
+    if (window.location.pathname.includes('cart.html')) {
+        window.renderCartPage();
+    }
 });

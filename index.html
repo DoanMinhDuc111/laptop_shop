@@ -27,7 +27,7 @@
 
     <section class="hero-banner">
         <div class="hero-content">
-            <span class="badge">CÔNG NGHỆ MỚI NHẤT</span>
+            <span class="badge" style="background: var(--accent-color); color: #1e3a8a; padding: 4px 12px; border-radius: 4px; font-size: 12px; font-weight: bold;">CÔNG NGHỆ MỚI NHẤT</span>
             <h1>Laptop Gaming<br><span>Đỉnh Cao Hiệu Năng</span></h1>
             <p>Khám phá bộ sưu tập Laptop mạnh mẽ nhất 2026. Tối ưu cho công việc sáng tạo, đồ họa chuyên sâu và trải nghiệm Gaming đỉnh cao.</p>
             <a href="#product-grid" class="hero-btn">XEM LAPTOP NGAY ➔</a>
@@ -45,32 +45,16 @@
         </section>
         
         <div style="text-align: center; margin: 40px 0;">
-            <button onclick="window.location.href='all-products.html'" style="background: var(--accent-color); color: var(--primary-color); border: none; padding: 12px 32px; font-weight: bold; border-radius: 25px; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+            <button onclick="window.location.href='all-products.html'" style="background: var(--primary-color); color: white; border: none; padding: 12px 32px; font-weight: bold; border-radius: 25px; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
                 Xem tất cả sản phẩm
             </button>
         </div>
     </main>
 
-    <div id="cart-modal" class="modal" style="display:none; position:fixed; z-index:9999; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.5); overflow:auto;">
-        <div class="modal-content" style="background:#fff; margin:10% auto; padding:20px; border-radius:10px; width:90%; max-width:450px; position:relative;">
-            <span onclick="closeCart()" style="position:absolute; right:20px; top:15px; cursor:pointer; font-size: 24px; color:#aaa;">&times;</span>
-            <h2 style="margin-top:0;">Giỏ hàng của bạn</h2>
-            <div id="cart-items" style="margin: 20px 0; max-height: 250px; overflow-y: auto;"></div>
-            
-            <div id="checkout-form" style="display:none; margin-bottom: 15px;">
-                <input type="text" id="customer-name" placeholder="Họ và tên khách hàng" style="width:100%; padding:10px; margin-bottom:8px; box-sizing: border-box; border:1px solid #ddd; border-radius:5px;">
-                <input type="text" id="customer-address" placeholder="Địa chỉ giao hàng chính xác" style="width:100%; padding:10px; box-sizing: border-box; border:1px solid #ddd; border-radius:5px;">
-            </div>
-            
-            <button id="checkout-btn" onclick="checkout()" style="width:100%; background:#10b981; color:white; border:none; padding:10px; font-weight:bold; border-radius:5px; cursor:pointer;">Xác nhận đặt hàng</button>
-            <button onclick="openHistory()" style="width:100%; margin-top:10px; background:#6366f1; color:white; border:none; padding:10px; font-weight:bold; border-radius:5px; cursor:pointer;">Xem lịch sử mua hàng</button>
-        </div>
-    </div>
-
-    <div class="ai-icon" onclick="openAIChat()" style="position:fixed; bottom:20px; right:20px; font-size:30px; background:#10b981; width:60px; height:60px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; cursor:pointer; box-shadow:0 4px 10px rgba(0,0,0,0.2); z-index:999;">🤖</div>
+    <div class="ai-icon" onclick="openAIChat()">🤖</div>
     
     <div id="chat-box" style="display:none; position:fixed; bottom:90px; right:20px; width:380px; height:550px; background:#fff; border-radius:24px; box-shadow:0 12px 40px rgba(0,0,0,0.12); z-index:9999; font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; flex-direction:column; overflow:hidden; border:none;">
-        <div style="background:linear-gradient(135deg, #4483a2, #2a5c76); padding:16px; display:flex; align-items:center; color:white; position:relative;">
+        <div style="background:linear-gradient(135deg, #46748c, #315366); padding:16px; display:flex; align-items:center; color:white; position:relative;">
             <img src="https://cdn-icons-png.flaticon.com/512/4712/4712139.png" alt="Avatar" style="width:48px; height:48px; border-radius:50%; object-fit:cover; border:2px solid rgba(255,255,255,0.3); margin-right:12px; background: #ffffff;">
             <div style="flex:1;">
                 <div style="font-weight:600; font-size:16px; display:flex; align-items:center; gap:6px; letter-spacing: 0.3px;">

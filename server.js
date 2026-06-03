@@ -31,16 +31,23 @@ app.get('/product-detail.html', (req, res) => {
     }
 });
 
-// Route kết nối API tiếp nhận tin nhắn Dify Bot
 app.post('/api/chat', async (req, res) => {
-    const { message } = req.body;
-    
+    const { query, inputs } = req.body; 
+
+    console.log("=== Nhận request từ frontend ===");
+    console.log("Query:", query);
+    console.log("Inputs:", inputs);
+
+    if (!query) {
+        return res.status(400).json({ answer: "Không nhận được câu hỏi từ người dùng." });
+    }
+
     try {
         const response = await axios.post(DIFY_API_URL, {
-            inputs: {},
-            query: message,
+            query: query,
+            inputs: inputs || {},           // Đảm bảo inputs luôn là object
             response_mode: "blocking",
-            user: "web-user-123"
+            user: "web-user-" + Date.now()  // Tạo user ID động để tránh lỗi conversation
         }, {
             headers: {
                 'Authorization': `Bearer ${DIFY_API_KEY}`,
@@ -48,13 +55,25 @@ app.post('/api/chat', async (req, res) => {
             }
         });
 
-        res.json({ answer: response.data.answer });
+        console.log("Dify trả về thành công");
+        res.json({ 
+            answer: response.data.answer || response.data.text 
+        });
+
     } catch (err) {
-        console.error("Lỗi Dify API:", err.response ? err.response.data : err.message);
-        res.status(500).json({ answer: "Xin lỗi, AI hiện đang gặp sự cố kết nối." });
+        console.error("=== LỖI CHI TIẾT TỪ DIFY ===");
+        if (err.response) {
+            console.error("Status:", err.response.status);
+            console.error("Data:", JSON.stringify(err.response.data, null, 2));
+            res.status(500).json({ 
+                answer: `Lỗi Dify: ${err.response.data.message || JSON.stringify(err.response.data)}` 
+            });
+        } else {
+            console.error("Lỗi khác:", err.message);
+            res.status(500).json({ answer: "Không kết nối được với Dify. Kiểm tra API Key và mạng." });
+        }
     }
 });
-
 const PORT = 5000;
 app.listen(PORT, () => {
     console.log(`==================================================`);

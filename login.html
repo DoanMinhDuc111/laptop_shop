@@ -2,38 +2,134 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>Đăng nhập - Hệ thống Laptop</title>
+    <title>Đăng nhập - TTGShop</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
     <style>
-        body { font-family: 'Poppins', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background: #f3f4f6; margin: 0; }
-        .login-box { background: white; padding: 40px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 300px; text-align: center; }
-        input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
-        button { width: 100%; padding: 12px; background: #6366f1; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; }
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            margin: 0; 
+            background: #f3f4f6; 
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        
+        /* Thay đổi màu sang #46748c cho đồng bộ */
+        .navbar {
+            background-color: #46748c;
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .navbar .logo {
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .auth-wrapper {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 60px 20px;
+        }
+        .login-box { 
+            background: white; 
+            padding: 40px; 
+            border-radius: 15px; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05); 
+            width: 320px; 
+            text-align: center; 
+        }
+        .login-box h2 { margin-top: 0; color: #1f2937; margin-bottom: 25px; }
+        input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-family: 'Poppins', sans-serif;}
+        button { width: 100%; padding: 12px; background: #6366f1; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold; margin-top: 10px;}
         button:hover { background: #4f46e5; }
+        .login-box p a { color: #6366f1; text-decoration: none; font-size: 14px; }
+        .login-box p a:hover { text-decoration: underline; }
+
+        /* FOOTER ĐỒNG BỘ */
+        footer.main-footer {
+            background-color: #46748c;
+            color: #f1f5f9;
+            padding: 40px 6px 20px 6px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 13px;
+            margin-top: auto;
+            border-top: 4px solid #365c71;
+        }
+        .footer-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 30px; max-width: 1300px; margin: 0 auto; padding: 0 20px; }
+        .footer-col h3 { color: #ffffff; font-size: 14px; font-weight: 600; margin-bottom: 15px; }
+        .footer-col ul { list-style: none; padding: 0; }
+        .footer-col ul li { margin-bottom: 8px; color: #e2e8f0; }
+        .badge-icon { display: inline-block; background: rgba(255, 255, 255, 0.15); padding: 4px 10px; margin: 4px 4px 4px 0; border-radius: 4px; font-size: 11px; color: #fff; }
+        .footer-bottom { text-align: center; margin-top: 40px; padding-top: 25px; border-top: 1px solid rgba(255, 255, 255, 0.1); font-size: 12px; color: #cbd5e1; }
     </style>
 </head>
 <body>
-    <div class="login-box">
-    <h2>Đăng nhập</h2>
-    <input type="text" id="username" placeholder="Nhập tên đăng nhập">
-    <input type="password" id="password" placeholder="Nhập mật khẩu">
-    <button onclick="handleLogin()">Đăng nhập</button>
-    <p><a href="register.html">Chưa có tài khoản? Đăng ký</a></p>
-</div>
 
-<script>
-    function handleLogin() {
-        const name = document.getElementById('username').value;
-        const pass = document.getElementById('password').value;
-        const savedUser = JSON.parse(localStorage.getItem('user_account'));
+    <header class="navbar">
+        <div class="logo" onclick="window.location.href='index.html'" style="cursor:pointer;">TTGShop</div>
+        <div class="nav-links">
+            <a href="index.html" style="color: white; text-decoration: none; font-weight: bold;">🏠 Trang chủ</a>
+        </div>
+    </header>
 
-        if (savedUser && savedUser.name === name && savedUser.pass === pass) {
-            localStorage.setItem('user_token', 'logged_in');
-            localStorage.setItem('user_profile', JSON.stringify(savedUser));
-            window.location.href = 'index.html';
-        } else {
-            alert("Sai tên đăng nhập hoặc mật khẩu!");
+    <main class="auth-wrapper">
+        <div class="login-box">
+            <h2>Đăng nhập</h2>
+            <input type="text" id="username" placeholder="Nhập tên đăng nhập">
+            <input type="password" id="password" placeholder="Nhập mật khẩu">
+            <button onclick="handleLogin()">Đăng nhập</button>
+            <p><a href="register.html">Chưa có tài khoản? Đăng ký ngay</a></p>
+        </div>
+    </main>
+
+    <footer class="main-footer">
+        <div class="footer-container">
+            <div class="footer-col">
+                <h3>TỔNG ĐÀI HỖ TRỢ</h3>
+                <p>Gọi mua: <strong>1800.3892</strong> (24/7)</p>
+                <h4>PHƯƠNG THỨC THANH TOÁN</h4>
+                <div><span class="badge-icon">VNPay</span><span class="badge-icon">MoMo</span></div>
+            </div>
+            <div class="footer-col">
+                <h3>THÔNG TIN VÀ CHÍNH SÁCH</h3>
+                <ul><li>Chính sách bảo hành</li></ul>
+            </div>
+        </div>
+        <div class="footer-bottom"><p>© 2026 Công ty Cổ phần Thương mại Điện tử TTGShop.</p></div>
+    </footer>
+
+    <script>
+        function handleLogin() {
+            const name = document.getElementById('username').value.trim();
+            const pass = document.getElementById('password').value;
+            
+            // Lấy tài khoản đã đăng ký từ localStorage
+            const savedUser = JSON.parse(localStorage.getItem('user_account'));
+            
+            if (!name || !pass) {
+                alert("Vui lòng nhập đầy đủ tên đăng nhập và mật khẩu!");
+                return;
+            }
+
+            if (savedUser && savedUser.name === name && savedUser.pass === pass) {
+                // Bổ sung dòng này để lưu tên phục vụ việc hiển thị ở trang chủ index.html
+                localStorage.setItem('currentUser', name); 
+                
+                // Giữ lại token cũ nếu hệ thống của bạn đang dùng song song
+                localStorage.setItem('user_token', 'logged_in'); 
+                
+                alert("Đăng nhập thành công!");
+                window.location.href = 'index.html';
+            } else { 
+                alert("Sai tên đăng nhập hoặc mật khẩu!"); 
+            }
         }
-    }
-</script>
+    </script>
 </body>
 </html>

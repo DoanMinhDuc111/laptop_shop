@@ -2,34 +2,96 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>Đăng ký tài khoản</title>
+    <title>Đăng ký tài khoản - TTGShop</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
     <style>
-        body { font-family: 'Poppins', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background: #f3f4f6; margin: 0; }
-        .box { background: white; padding: 40px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 300px; text-align: center; }
-        input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
-        button { width: 100%; padding: 12px; background: #10b981; color: white; border: none; border-radius: 8px; cursor: pointer; }
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            margin: 0; 
+            background: #f3f4f6; 
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Thay đổi màu sang #46748c cho đồng bộ */
+        .navbar {
+            background-color: #46748c;
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .navbar .logo { color: white; font-size: 24px; font-weight: bold; }
+
+        .auth-wrapper { flex: 1; display: flex; justify-content: center; align-items: center; padding: 60px 20px; }
+        .box { background: white; padding: 40px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); width: 320px; text-align: center; }
+        .box h2 { margin-top: 0; color: #1f2937; margin-bottom: 25px; }
+        input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-family: 'Poppins', sans-serif;}
+        button { width: 100%; padding: 12px; background: #10b981; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold; margin-top: 10px;}
+        button:hover { background: #059669; }
+        .box p a { color: #10b981; text-decoration: none; font-size: 14px; }
+        .box p a:hover { text-decoration: underline; }
+
+        /* FOOTER ĐỒNG BỘ */
+        footer.main-footer {
+            background-color: #46748c;
+            color: #f1f5f9;
+            padding: 40px 6px 20px 6px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 13px;
+            margin-top: auto;
+            border-top: 4px solid #365c71;
+        }
+        .footer-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 30px; max-width: 1300px; margin: 0 auto; padding: 0 20px; }
+        .footer-col h3 { color: #ffffff; font-size: 14px; font-weight: 600; margin-bottom: 15px; }
+        .badge-icon { display: inline-block; background: rgba(255, 255, 255, 0.15); padding: 4px 10px; margin: 4px 4px 4px 0; border-radius: 4px; font-size: 11px; color: #fff; }
+        .footer-bottom { text-align: center; margin-top: 40px; padding-top: 25px; border-top: 1px solid rgba(255, 255, 255, 0.1); font-size: 12px; color: #cbd5e1; }
     </style>
 </head>
 <body>
-    <div class="box">
-    <h2>Đăng ký tài khoản</h2>
-    <input type="text" id="reg-name" placeholder="Họ và tên">
-    <input type="text" id="reg-address" placeholder="Địa chỉ giao hàng">
-    <input type="password" id="reg-pass" placeholder="Mật khẩu">
-    <button onclick="handleRegister()">Đăng ký ngay</button>
-    <p><a href="login.html">Đã có tài khoản? Đăng nhập</a></p>
-</div>
-<script>
-    function handleRegister() {
-        const name = document.getElementById('reg-name').value;
-        const address = document.getElementById('reg-address').value;
-        const pass = document.getElementById('reg-pass').value;
-        if (!name || !pass) { alert("Vui lòng nhập đủ thông tin!"); return; }
-        
-        localStorage.setItem('user_account', JSON.stringify({ name, address, pass }));
-        alert("Đăng ký thành công!");
-        window.location.href = 'login.html';
-    }
-</script>
+
+    <header class="navbar">
+        <div class="logo" onclick="window.location.href='index.html'" style="cursor:pointer;">TTGShop</div>
+        <div class="nav-links">
+            <a href="index.html" style="color: white; text-decoration: none; font-weight: bold;">🏠 Trang chủ</a>
+        </div>
+    </header>
+
+    <main class="auth-wrapper">
+        <div class="box">
+            <h2>Đăng ký tài khoản</h2>
+            <input type="text" id="reg-name" placeholder="Họ và tên">
+            <input type="text" id="reg-address" placeholder="Địa chỉ giao hàng">
+            <input type="password" id="reg-pass" placeholder="Mật khẩu">
+            <button onclick="handleRegister()">Đăng ký ngay</button>
+            <p><a href="login.html">Đã có tài khoản? Đăng nhập</a></p>
+        </div>
+    </main>
+
+    <footer class="main-footer">
+        <div class="footer-container">
+            <div class="footer-col">
+                <h3>TỔNG ĐÀI HỖ TRỢ</h3>
+                <p>Gọi mua: <strong>1800.3892</strong> (24/7)</p>
+                <h4>PHƯƠNG THỨC THANH TOÁN</h4>
+                <div><span class="badge-icon">VNPay</span><span class="badge-icon">MoMo</span></div>
+            </div>
+        </div>
+        <div class="footer-bottom"><p>© 2026 Công ty Cổ phần Thương mại Điện tử TTGShop.</p></div>
+    </footer>
+
+    <script>
+        function handleRegister() {
+            const name = document.getElementById('reg-name').value;
+            const address = document.getElementById('reg-address').value;
+            const pass = document.getElementById('reg-pass').value;
+            if (!name || !pass) { alert("Vui lòng nhập đủ thông tin!"); return; }
+            localStorage.setItem('user_account', JSON.stringify({ name, address, pass }));
+            alert("Đăng ký thành công!");
+            window.location.href = 'login.html';
+        }
+    </script>
 </body>
 </html>
