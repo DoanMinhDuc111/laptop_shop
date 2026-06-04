@@ -56,8 +56,14 @@
     <div id="chat-box">
         <h3>Trợ lý AI</h3>
         <div id="chat-messages"></div>
-        <input type="text" id="chat-input" placeholder="Hỏi gì về laptop...">
-        <button onclick="sendMessage()">Gửi</button>
+        
+        <div id="suggestion-container" style="display: flex; gap: 8px; margin-bottom: 10px; overflow-x: auto; padding-bottom: 5px;">
+            <button class="suggestion-btn" onclick="sendSuggestion('Sản phẩm này có bảo hành không?')">Bảo hành?</button>
+            <button class="suggestion-btn" onclick="sendSuggestion('Phí vận chuyển là bao nhiêu?')">Vận chuyển?</button>
+        </div>
+
+        <input type="text" id="chat-input" placeholder="Hỏi gì về laptop..." style="width: 100%; padding: 10px; box-sizing: border-box;">
+        <button onclick="sendMessage()" style="width: 100%; margin-top: 10px;">Gửi</button>
     </div>
 
     <script src="script.js"></script>

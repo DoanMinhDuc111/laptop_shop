@@ -95,29 +95,34 @@ window.addToCart = function(id) {
     }
 };
 
+window.buyNow = function(id) {
+    const product = allProducts.find(p => p.id === id);
+    if(product) {
+        cart.push(product);
+        localStorage.setItem('web_cart', JSON.stringify(cart));
+        updateCartCount();
+        window.location.href = 'cart.html';
+    }
+};
+
 function updateCartCount() {
     const cartCount = document.getElementById('cart-count');
     if(cartCount) cartCount.innerText = cart.length;
 }
 
-// --- SỬA LỖI: THÊM HÀM OPEN CART ---
 window.openCart = function() {
-    window.location.href = 'cart.html'; // Chuyển hướng tới trang giỏ hàng
+    window.location.href = 'cart.html'; 
 };
 
-// Đảm bảo có cả hàm updateCartCount để không bị lỗi nếu nút nào gọi nó
-window.updateCartCount = function() {
-    const cartCount = document.getElementById('cart-count');
-    if (cartCount) cartCount.innerText = cart.length;
-};
-
-// Hàm vẽ dữ liệu giỏ hàng lên trang cart.html độc lập
 window.renderCartPage = function() {
     const cartItemsDiv = document.getElementById('cart-page-items');
     const checkoutSection = document.getElementById('checkout-form-section');
     const totalDiv = document.getElementById('cart-total');
     
-    if (!cartItemsDiv) return; // Nếu không ở trang cart.html thì dừng lại
+    if (!cartItemsDiv) return; 
+
+    // Lấy giỏ hàng mới nhất từ LocalStorage
+    cart = JSON.parse(localStorage.getItem('web_cart')) || [];
 
     if (cart.length === 0) {
         cartItemsDiv.innerHTML = `<p style="text-align:center; color:#666; padding: 20px 0;">Giỏ hàng của bạn đang trống trơn. <a href="index.html" style="color:#6366f1; text-decoration:none; font-weight:bold;">Quay lại sắm ngay!</a></p>`;
@@ -144,33 +149,28 @@ window.removeFromCartPage = function(index) {
     cart.splice(index, 1);
     localStorage.setItem('web_cart', JSON.stringify(cart));
     updateCartCount();
-    window.renderCartPage(); // Vẽ lại giao diện ngay khi xóa
+    window.renderCartPage(); 
 };
 
 window.checkout = function() {
-    const nameInput = document.getElementById('customer-name');
-    const addressInput = document.getElementById('customer-address');
-    
-    if(!nameInput || !addressInput) return;
+    const name = document.getElementById('customer-name').value.trim();
+    const phone = document.getElementById('customer-phone').value.trim();
+    const address = document.getElementById('customer-address').value.trim();
 
-    const name = nameInput.value.trim();
-    const address = addressInput.value.trim();
-    
-    if(!name || !address) {
-        alert("Vui lòng điền thông tin giao hàng!");
+    if (!name || !phone || !address) {
+        alert('Vui lòng nhập đầy đủ Họ tên, Số điện thoại và Địa chỉ để nhận hàng!');
         return;
     }
-    
-    alert(`🎉 Đặt hàng thành công!\nCảm ơn anh/chị ${name} đã mua sắm tại TTGShop.`);
-    orderHistory.push({ date: new Date().toLocaleString(), items: [...cart], name, address });
-    localStorage.setItem('web_history', JSON.stringify(orderHistory));
-    
-    cart = [];
-    localStorage.removeItem('web_cart');
-    updateCartCount();
-    
-    // Đặt hàng xong chuyển hướng thẳng về trang chủ
-    window.location.href = 'index.html';
+
+    // LƯU TẠM THÔNG TIN ĐỂ SANG TRANG SUCCESS BOT CÓ THỂ ĐỌC ĐƯỢC
+    const customerInfo = { name: name, phone: phone, address: address };
+    localStorage.setItem('latest_customer_info', JSON.stringify(customerInfo));
+
+    // Thực hiện logic xóa giỏ hàng hiện tại
+    localStorage.removeItem('web_cart'); 
+
+    // Chuyển thẳng sang trang thành công
+    window.location.href = 'success.html';
 };
 
 window.openHistory = function() {
@@ -186,7 +186,7 @@ window.openHistory = function() {
 };
 
 // ==========================================
-// 4. HỆ THỐNG CHATBOT (SỬA LỖI)
+// 4. HỆ THỐNG CHATBOT 
 // ==========================================
 window.openAIChat = function() {
     const chatBox = document.getElementById('chat-box');
@@ -219,7 +219,6 @@ function initChat() {
             const input = document.getElementById('chat-input');
             if (input) {
                 input.value = "Hỏi AI về sản phẩm này";
-                // Gửi ngay lập tức
                 window.sendMessage();
             }
         };
@@ -229,7 +228,6 @@ function initChat() {
     }
 }
 
-// Hàm gửi tin nhắn chính thức
 window.sendMessage = async function() {
     const input = document.getElementById('chat-input');
     const chatDiv = document.getElementById('chat-messages');
@@ -238,7 +236,6 @@ window.sendMessage = async function() {
 
     const userText = input.value.trim();
     
-    // Hiển thị tin nhắn người dùng
     chatDiv.innerHTML += `
         <div style="background:#6366f1; color:white; padding:12px 18px; border-radius:20px 20px 4px 20px; max-width:85%; line-height:1.5; font-size:14px; align-self:flex-end; box-shadow:0 4px 12px rgba(99,102,241,0.2); font-weight:500; margin-left:auto;">
             ${userText}
@@ -276,6 +273,7 @@ window.sendMessage = async function() {
         
         document.getElementById(loadingId).remove();
         
+        // HỆ THỐNG SỬ DỤNG TEMPLATE STRING VỚI innerHTML NÊN TỰ ĐỘNG CHẠY ĐƯỢC THẺ <a> TỪ AI TRẢ VỀ
         chatDiv.innerHTML += `
             <div style="background:#ffffff; padding:14px 18px; border-radius:20px 20px 20px 4px; box-shadow:0 2px 12px rgba(0,0,0,0.03); max-width:85%; color:#1e293b; line-height:1.6; align-self:flex-start; border: 1px solid #f1f5f9;">
                 <b>Bot PMV:</b> ${data.answer || data.text || "Em đã nhận được câu hỏi ạ..."}
@@ -286,16 +284,22 @@ window.sendMessage = async function() {
         document.getElementById(loadingId).remove();
         
         chatDiv.innerHTML += `
-            <div style="background:#ffffff; padding:14px 18px; border-radius:20px 20px 4px 20px; box-shadow:0 2px 12px rgba(0,0,0,0.03); max-width:85%; color:#1e293b; line-height:1.6; align-self:flex-start; border:1px solid #f1f5f9;">
+            <div style="background:#ffffff; padding:14px 18px; border-radius:20px 20px 4px 20px; box-shadow:0 2px 12px rgba(0,0,0,0.03); max-width:85%; color:#1e293b; line-height:1.6; align-self:flex-start; border: 1px solid #f1f5f9;">
                 <b>Bot PMV:</b> Xin lỗi, hiện tại hệ thống đang gặp sự cố. Anh/chị thử lại sau nhé!
             </div>
         `;
     }
     chatDiv.scrollTop = chatDiv.scrollHeight;
 };
-// ==========================================
-// 5. QUẢN LÝ ĐĂNG NHẬP / ĐĂNG XUẤT ĐỒNG BỘ
-// ==========================================
+
+window.sendSuggestion = function(text) {
+    const input = document.getElementById('chat-input');
+    if (input) {
+        input.value = text;
+        window.sendMessage();
+    }
+};
+
 window.checkLoginStatus = function() {
     const currentUser = localStorage.getItem('currentUser'); 
     const registerBtn = document.querySelector('.btn-register');
@@ -324,16 +328,12 @@ window.logout = function() {
     window.location.href = 'index.html'; 
 };
 
-// ==========================================
-// 6. KHỞI CHẠY KHI TRANG TẢI XONG
-// ==========================================
 document.addEventListener('DOMContentLoaded', () => {
     fetchProductsFromSheet(); 
     window.checkLoginStatus(); 
     initChat();
     updateCartCount();
     
-    // Nhận diện nếu đang ở trang cart.html thì tự kích hoạt vẽ dữ liệu giỏ hàng
     if (window.location.pathname.includes('cart.html')) {
         window.renderCartPage();
     }

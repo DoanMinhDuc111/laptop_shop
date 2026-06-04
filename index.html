@@ -71,6 +71,11 @@
 
         <div id="chat-messages" style="flex:1; padding:20px; overflow-y:auto; font-size:14px; background:#f8fafc; display:flex; flex-direction:column; gap:12px;"></div>
 
+        <div id="suggestion-container" style="display: flex; gap: 8px; padding: 0 16px 10px 16px; background:#f8fafc; overflow-x: auto;">
+            <button onclick="sendSuggestion('Sản phẩm này có bảo hành không?')" style="padding:6px 12px; border:1px solid #e2e8f0; background:#fff; border-radius:16px; font-size:12px; cursor:pointer; color:#4a5568;">Bảo hành?</button>
+            <button onclick="sendSuggestion('Phí vận chuyển là bao nhiêu?')" style="padding:6px 12px; border:1px solid #e2e8f0; background:#fff; border-radius:16px; font-size:12px; cursor:pointer; color:#4a5568;">Vận chuyển?</button>
+        </div>
+
         <div style="display:flex; align-items:center; gap:10px; padding:14px 16px; background:#ffffff; border-top:1px solid #f1f5f9;">
             <button style="width:42px; height:42px; border-radius:50%; border:1px solid #e2e8f0; background:#f8fafc; color:#64748b; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:0.2s;">
                 <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>

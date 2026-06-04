@@ -225,8 +225,8 @@
         </div>
         <div id="chat-messages" style="flex:1; padding:20px; overflow-y:auto; font-size:14px; background:#f8fafc; display:flex; flex-direction:column; gap:12px;"></div>
         <div style="display:flex; align-items:center; gap:10px; padding:14px 16px; background:#ffffff; border-top:1px solid #f1f5f9;">
-            <input type="text" id="chat-input" placeholder="Nhập tin nhắn..." style="flex:1; border:1px solid #e2e8f0; background:#f8fafc; border-radius:24px; padding:12px 18px; outline:none; font-size:14px; color:#1e293b;" onkeypress="if(event.key === 'Enter') sendMessage()">
-            <button onclick="sendMessage()" style="width:42px; height:42px; border-radius:50%; border:none; background:#6366f1; color:white; display:flex; align-items:center; justify-content:center; cursor:pointer;"><svg width="18" height="18" fill="currentColor" viewBox="0 0 16 16" style="transform: rotate(45deg);"><path d="M15.854.146a.5.5 0 0 1 .11.525l-5.633 13.006a.5.5 0 0 1-.942.014L5.384 9.11 1.111 6.852a.5.5 0 0 1-.014-.942L14.103.279a.5.5 0 0 1 .525.111z"/></svg></button>
+            <input type="text" id="chat-input" placeholder="Nhập tin nhắn..." style="flex:1; border:1px solid #e2e8f0; background:#f8fafc; border-radius:24px; padding:12px 18px; outline:none; font-size:14px; color:#1e293b;" onkeypress="if(event.key === 'Enter') window.sendMessage()">
+            <button onclick="window.sendMessage()" style="width:42px; height:42px; border-radius:50%; border:none; background:#6366f1; color:white; display:flex; align-items:center; justify-content:center; cursor:pointer;"><svg width="18" height="18" fill="currentColor" viewBox="0 0 16 16" style="transform: rotate(45deg);"><path d="M15.854.146a.5.5 0 0 1 .11.525l-5.633 13.006a.5.5 0 0 1-.942.014L5.384 9.11 1.111 6.852a.5.5 0 0 1-.014-.942L14.103.279a.5.5 0 0 1 .525.111z"/></svg></button>
         </div>
     </div>
 
@@ -341,117 +341,110 @@
         // --- HÀM THỰC TẾ: THÊM VÀO GIỎ HÀNG ---
         function addToCartAndNotify(id) { 
             if (!currentProduct) return;
-            let cart = JSON.parse(localStorage.getItem('cart')) || [];
-            let existingItem = cart.find(item => item.id === id);
-
-            if (existingItem) {
-                existingItem.quantity += 1;
-            } else {
-                cart.push({
-                    id: currentProduct.id,
-                    name: currentProduct.name,
-                    price: currentProduct.price,
-                    image: currentProduct.image,
-                    brand: currentProduct.brand,
-                    quantity: 1
-                });
-            }
-            localStorage.setItem('cart', JSON.stringify(cart));
+            let cart = JSON.parse(localStorage.getItem('web_cart')) || [];
+            
+            cart.push({
+                id: currentProduct.id,
+                name: currentProduct.name,
+                price: currentProduct.price,
+                brand: currentProduct.brand,
+                specs: currentProduct.specs,
+                image: currentProduct.image
+            });
+            
+            localStorage.setItem('web_cart', JSON.stringify(cart));
             alert(`Đã thêm "${currentProduct.name}" vào giỏ hàng thành công!`); 
         }
 
         // --- HÀM THỰC TẾ: MUA NGAY (THÊM & CHUYỂN TRANG) ---
         function processCheckout(id) { 
             if (!currentProduct) return;
-            let cart = JSON.parse(localStorage.getItem('cart')) || [];
-            let existingItem = cart.find(item => item.id === id);
-
-            if (!existingItem) {
-                cart.push({
-                    id: currentProduct.id,
-                    name: currentProduct.name,
-                    price: currentProduct.price,
-                    image: currentProduct.image,
-                    brand: currentProduct.brand,
-                    quantity: 1
-                });
-                localStorage.setItem('cart', JSON.stringify(cart));
-            }
+            let cart = JSON.parse(localStorage.getItem('web_cart')) || [];
+            
+            cart.push({
+                id: currentProduct.id,
+                name: currentProduct.name,
+                price: currentProduct.price,
+                brand: currentProduct.brand,
+                specs: currentProduct.specs,
+                image: currentProduct.image
+            });
+            
+            localStorage.setItem('web_cart', JSON.stringify(cart));
             window.location.href = 'cart.html';
         }
 
         function openAIChat() { const box = document.getElementById('chat-box'); if(box) box.style.display = box.style.display === 'flex' ? 'none' : 'flex'; }
         
         function initChat(productName = "") {
-    const chatDiv = document.getElementById('chat-messages'); 
-    if (!chatDiv) return;
+            const chatDiv = document.getElementById('chat-messages'); 
+            if (!chatDiv) return;
 
-    const welcomeMessage = productName 
-        ? `Dạ em chào anh/chị! 👋 Em là Bot Phạm Nhật Vượng, trợ lý ảo tư vấn của TTGShop. Em có thể hỗ trợ gì cho anh/chị về sản phẩm <b>${productName}</b> này không ạ? 🥰`
-        : `Dạ em chào anh/chị! 👋 Em là Bot Phạm Nhật Vượng, trợ lý ảo tư vấn của TTGShop. Em có thể hỗ trợ anh/chị xem máy, tư vấn trả góp hay tìm thông tin khuyến mãi gì hôm nay ạ? 🥰`;
+            const welcomeMessage = productName 
+                ? `Dạ em chào anh/chị! 👋 Em là Bot Phạm Nhật Vượng, trợ lý ảo tư vấn của TTGShop. Em có thể hỗ trợ gì cho anh/chị về sản phẩm <b>${productName}</b> này không ạ? 🥰`
+                : `Dạ em chào anh/chị! 👋 Em là Bot Phạm Nhật Vượng, trợ lý ảo tư vấn của TTGShop. Em có thể hỗ trợ anh/chị xem máy, tư vấn trả góp hay tìm thông tin khuyến mãi gì hôm nay ạ? 🥰`;
 
-    chatDiv.innerHTML = `
-        <div style="background:#ffffff; padding:14px 18px; border-radius:20px 20px 20px 4px; box-shadow:0 2px 12px rgba(0,0,0,0.03); max-width:85%; color:#1e293b; line-height:1.6; align-self:flex-start; border: 1px solid #f1f5f9;">
-            ${welcomeMessage}
-        </div>
-    `;
+            chatDiv.innerHTML = `
+                <div style="background:#ffffff; padding:14px 18px; border-radius:20px 20px 20px 4px; box-shadow:0 2px 12px rgba(0,0,0,0.03); max-width:85%; color:#1e293b; line-height:1.6; align-self:flex-start; border: 1px solid #f1f5f9;">
+                    ${welcomeMessage}
+                </div>
+            `;
 
-    const btnContainer = document.createElement('div');
-    btnContainer.style.cssText = "display:flex; flex-direction:column; gap:8px; margin-top:10px; align-items:flex-start; width:100%;";
-    
-    const btn = document.createElement('button');
-    btn.innerHTML = `<span style="margin-right:6px;">🤖</span> Hỏi AI về sản phẩm này`;
-    btn.style.cssText = "padding:10px 20px; background:#e0e7ff; border:1px solid #c7d2fe; color:#4338ca; border-radius:24px; cursor:pointer; font-size:14px; font-weight:600; transition:all 0.2s; box-shadow:0 2px 6px rgba(99,102,241,0.06); text-align:left; width:fit-content; display:inline-flex; align-items:center;";
-    
-    // SỬA LỖI Ở ĐÂY
-    btn.onclick = function() {
-        const input = document.getElementById('chat-input');
-        if (input) {
-            input.value = "Hỏi AI về sản phẩm này";
-            // Gọi hàm từ window để đảm bảo
-            if (typeof window.sendMessage === 'function') {
-                window.sendMessage();
-            } else {
-                console.error("sendMessage function is not available");
-                alert("Lỗi: Chưa tải xong hàm chat. Vui lòng refresh trang.");
-            }
+            const btnContainer = document.createElement('div');
+            btnContainer.style.cssText = "display:flex; flex-direction:column; gap:8px; margin-top:10px; align-items:flex-start; width:100%;";
+            
+            const btn = document.createElement('button');
+            btn.innerHTML = `<span style="margin-right:6px;">🤖</span> Hỏi AI về sản phẩm này`;
+            btn.style.cssText = "padding:10px 20px; background:#e0e7ff; border:1px solid #c7d2fe; color:#4338ca; border-radius:24px; cursor:pointer; font-size:14px; font-weight:600; transition:all 0.2s; box-shadow:0 2px 6px rgba(99,102,241,0.06); text-align:left; width:fit-content; display:inline-flex; align-items:center;";
+            
+            btn.onclick = function() {
+                const input = document.getElementById('chat-input');
+                if (input) {
+                    input.value = "Hỏi AI về sản phẩm này";
+                    if (typeof window.sendMessage === 'function') {
+                        window.sendMessage();
+                    } else {
+                        console.error("sendMessage function is not available");
+                        alert("Lỗi: Chưa tải xong hàm chat. Vui lòng refresh trang.");
+                    }
+                }
+            };
+
+            btnContainer.appendChild(btn);
+            chatDiv.appendChild(btnContainer);
         }
-    };
-
-    btnContainer.appendChild(btn);
-    chatDiv.appendChild(btnContainer);
-}
 
         document.addEventListener('DOMContentLoaded', () => { 
             initChat(); 
             loadProductDetail(); 
         });
-window.sendMessage = async function() {
-    const input = document.getElementById('chat-input');
-    const chatDiv = document.getElementById('chat-messages');
-    const message = input.value.trim();
-    if (!message) return;
 
-    // Hiển thị tin nhắn của bạn
-    chatDiv.innerHTML += `<div style="text-align:right; margin:5px; padding:8px; background:#e1f5fe; border-radius:10px;">${message}</div>`;
-    input.value = "";
+        window.sendMessage = async function() {
+            const input = document.getElementById('chat-input');
+            const chatDiv = document.getElementById('chat-messages');
+            const message = input.value.trim();
+            if (!message) return;
 
-    try {
-        const response = await fetch('/api/chat', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ 
-                query: message, 
-                inputs: { product_name: currentProduct ? currentProduct.name : "Không xác định" } 
-            })
-        });
-        const data = await response.json();
-        chatDiv.innerHTML += `<div style="text-align:left; margin:5px; padding:8px; background:#fff; border-radius:10px; border:1px solid #ddd;"><b>Bot:</b> ${data.answer}</div>`;
-        chatDiv.scrollTop = chatDiv.scrollHeight;
-    } catch (err) {
-        chatDiv.innerHTML += `<div style="color:red;">Lỗi kết nối AI.</div>`;
-    }
-};
+            chatDiv.innerHTML += `<div style="text-align:right; margin:5px; padding:8px; background:#e1f5fe; border-radius:10px;">${message}</div>`;
+            input.value = "";
+
+            try {
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        query: message, 
+                        inputs: { product_name: currentProduct ? currentProduct.name : "Không xác định" } 
+                    })
+                });
+                const data = await response.json();
+                chatDiv.innerHTML += `<div style="text-align:left; margin:5px; padding:8px; background:#fff; border-radius:10px; border:1px solid #ddd;"><b>Bot:</b> ${data.answer}</div>`;
+                chatDiv.scrollTop = chatDiv.scrollHeight;
+            } catch (err) {
+                chatDiv.innerHTML += `<div style="color:red;">Lỗi kết nối AI.</div>`;
+            }
+        };
     </script>
+    <script src="script.js"></script>
 </body>
 </html>

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Đặt hàng thành công - TTGShop</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            margin: 0; 
+            background: #f3f4f6; 
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        /* NAVBAR ĐỒNG BỘ */
+        .navbar {
+            background-color: #46748c;
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .navbar .logo { color: white; font-size: 24px; font-weight: bold; }
+
+        /* NỘI DUNG CHÍNH Ở GIỮA TRANG */
+        .success-wrapper {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            box-sizing: border-box;
+        }
+        .success-box { 
+            background: white; 
+            padding: 40px; 
+            max-width: 500px; 
+            width: 100%;
+            border-radius: 15px; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05); 
+            text-align: center;
+        }
+        .icon { font-size: 60px; color: #10b981; margin-bottom: 20px; }
+        h2 { color: #1f2937; margin-bottom: 10px; margin-top: 0; }
+        p { color: #4b5563; font-size: 15px; line-height: 1.6; }
+        .btn-home { display: inline-block; margin-top: 25px; padding: 12px 30px; background: #46748c; color: white; text-decoration: none; border-radius: 8px; font-weight: bold; transition: background 0.2s; }
+        .btn-home:hover { background: #365c71; }
+
+        /* FOOTER ĐỒNG BỘ */
+        footer.main-footer {
+            background-color: #46748c;
+            color: #f1f5f9;
+            padding: 40px 6px 20px 6px;
+            font-size: 13px;
+            margin-top: auto;
+            border-top: 4px solid #365c71;
+        }
+        .footer-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 30px; max-width: 1300px; margin: 0 auto; padding: 0 20px; }
+        .footer-col h3 { color: #ffffff; font-size: 14px; font-weight: 600; margin-bottom: 15px; }
+        .footer-col ul { list-style: none; padding: 0; }
+        .footer-col ul li { margin-bottom: 8px; color: #e2e8f0; }
+        .badge-icon { display: inline-block; background: rgba(255, 255, 255, 0.15); padding: 4px 10px; margin: 4px 4px 4px 0; border-radius: 4px; font-size: 11px; color: #fff; }
+        .footer-bottom { text-align: center; margin-top: 40px; padding-top: 25px; border-top: 1px solid rgba(255, 255, 255, 0.1); font-size: 12px; color: #cbd5e1; }
+    </style>
+</head>
+<body>
+
+    <header class="navbar">
+        <div class="logo" onclick="window.location.href='index.html'" style="cursor:pointer;">TTGShop</div>
+        <div class="nav-links">
+            <a href="index.html" style="color: white; text-decoration: none; font-weight: bold;">🏠 Trang chủ</a>
+        </div>
+    </header>
+
+    <main class="success-wrapper">
+        <div class="success-box">
+            <div class="icon">🎉</div>
+            <h2>Đặt Hàng Thành Công!</h2>
+            <p>Cảm ơn bạn đã mua sắm tại TTGShop. Đơn hàng của bạn đã được tiếp nhận và đang trong quá trình xử lý.</p>
+            <p style="font-size: 13px; color: #9ca3af;">Nhân viên tư vấn sẽ liên hệ với bạn qua điện thoại trong thời gian sớm nhất.</p>
+            <a href="index.html" class="btn-home">🏠 Quay về trang chủ</a>
+        </div>
+    </main>
+
+    <footer class="main-footer">
+        <div class="footer-container">
+            <div class="footer-col">
+                <h3>TỔNG ĐÀI HỖ TRỢ</h3>
+                <p>Gọi mua: <strong>1800.3892</strong> (24/7)</p>
+                <h4>PHƯƠNG THỨC THANH TOÁN</h4>
+                <div><span class="badge-icon">VNPay</span><span class="badge-icon">MoMo</span></div>
+            </div>
+            <div class="footer-col">
+                <h3>THÔNG TIN VÀ CHÍNH SÁCH</h3>
+                <ul><li>Chính sách bảo hành</li></ul>
+            </div>
+        </div>
+        <div class="footer-bottom"><p>© 2026 Công ty Cổ phần Thương mại Điện tử TTGShop.</p></div>
+    </footer>
+
+    <div class="ai-icon" onclick="window.openAIChat()">💬</div>
+    <div id="chat-box" style="display:none;">
+        <div id="chat-messages"></div>
+        <div style="margin-top:10px;">
+            <input type="text" id="chat-input" placeholder="Nhập câu hỏi..." style="width:100%; padding:8px; border:1px solid #ddd; border-radius:5px;">
+            <button onclick="window.sendMessage()" style="width:100%; margin-top:5px;">Gửi</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Lấy thông tin khách hàng được lưu tạm từ file script.js lúc bấm đặt hàng
+            const customerData = JSON.parse(localStorage.getItem('latest_customer_info'));
+            
+            if (customerData) {
+                // Tự động mở Box Chat lên
+                const chatBox = document.getElementById('chat-box');
+                if (chatBox) {
+                    chatBox.style.display = 'block';
+                }
+
+                // Đưa thông tin khách hàng vào nội dung chat của Bot
+                const chatMessages = document.getElementById('chat-messages');
+                if (chatMessages) {
+                    const botMsg = document.createElement('div');
+                    botMsg.className = 'bot-message'; // Kế thừa class từ style.css
+                    botMsg.style.padding = '10px';
+                    botMsg.style.marginBottom = '10px';
+                    botMsg.style.background = '#e0f2fe';
+                    botMsg.style.borderRadius = '8px';
+                    botMsg.style.textAlign = 'left';
+                    
+                    botMsg.innerHTML = `
+                        <strong>🤖 Trợ lý TTGShop:</strong><br>
+                        Xin chúc mừng! Đơn hàng đã được thiết lập thành công. Dưới đây là thông tin nhận hàng của bạn:<br>
+                        👤 <b>Họ tên:</b> ${customerData.name}<br>
+                        📞 <b>Số điện thoại:</b> ${customerData.phone}<br>
+                        📍 <b>Địa chỉ:</b> ${customerData.address}
+                    `;
+                    chatMessages.appendChild(botMsg);
+                }
+                
+                // Xóa dữ liệu tạm sau khi đã hiển thị để tránh bị lặp khi f5 trang
+                localStorage.removeItem('latest_customer_info');
+            }
+        });
+    </script>
+</body>
+</html>
